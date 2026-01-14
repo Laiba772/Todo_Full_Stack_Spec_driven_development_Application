@@ -7,20 +7,41 @@ import { User, AuthState, AuthContextType } from '@/types/auth';
 import { useBetterAuth } from '@/hooks/useBetterAuth';
 import apiClient from '@/lib/api/clients';
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// ------------------------
+// 1️⃣ Default context value
+// ------------------------
+const defaultAuthContext: AuthContextType = {
+  user: null,
+  loading: false,
+  error: null,
+  isAuthenticated: false,
+  signIn: async () => {},
+  signUp: async () => {},
+  signOut: async () => {},
+  refreshAuth: async () => {},
+};
 
+// ------------------------
+// 2️⃣ Create context
+// ------------------------
+export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+
+// ------------------------
+// 3️⃣ Provider component
+// ------------------------
 export function AuthContextProvider({ children }: { children: ReactNode }) {
   const authHook = useBetterAuth();
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
-    loading: true,
+    loading: true, // initially loading
     error: null,
     isAuthenticated: false,
   });
-
   const router = useRouter();
 
+  // ------------------------
   // Fetch user from backend
+  // ------------------------
   const fetchUser = useCallback(async () => {
     setAuthState(prev => ({ ...prev, loading: true }));
     try {
@@ -48,11 +69,16 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Check session on mount
+  // ------------------------
+  // Initial load check
+  // ------------------------
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
 
+  // ------------------------
+  // Sign In
+  // ------------------------
   const signIn = async (email: string, password: string) => {
     setAuthState(prev => ({ ...prev, loading: true, error: null }));
     try {
@@ -69,6 +95,9 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // ------------------------
+  // Sign Up
+  // ------------------------
   const signUp = async (email: string, password: string) => {
     setAuthState(prev => ({ ...prev, loading: true, error: null }));
     try {
@@ -85,6 +114,9 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // ------------------------
+  // Sign Out
+  // ------------------------
   const signOut = async () => {
     try {
       await authHook.signOut(); // clears cookie in backend
@@ -107,10 +139,16 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // ------------------------
+  // Refresh auth state
+  // ------------------------
   const refreshAuth = useCallback(async () => {
     await fetchUser();
   }, [fetchUser]);
 
+  // ------------------------
+  // Provide context
+  // ------------------------
   return (
     <AuthContext.Provider
       value={{
@@ -126,10 +164,9 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// ------------------------
+// 4️⃣ Custom hook
+// ------------------------
 export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthContextProvider');
-  }
-  return context;
+  return useContext(AuthContext);
 }
