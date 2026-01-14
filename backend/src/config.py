@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     log_level: str = "info"
 
     # CORS
-    cors_origins: list[str] = ["http://localhost:3000", "http://localhost:3001"]
+    cors_origins: list[str] = ["http://localhost:3000", "https://taskwiz-full-stack-application-hgw2ggwpx.vercel.app/"]
 
     model_config = {
         "env_file": ".env",
