@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "@/lib/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import { getTask } from "@/lib/api/tasks";
-import { useTasks } from "@/lib/hooks/useTasks";
+import { useTasks } from "@/hooks/useTasks";
 import { TaskForm } from "@/components/tasks/TaskForm";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
@@ -14,8 +14,18 @@ export default function TaskDetailPage() {
   const router = useRouter();
   const params = useParams();
   const taskId = params.taskId as string;
+
   const { user } = useAuth();
-  const { updateTask, deleteTask } = useTasks();
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Please login to continue.
+      </div>
+    );
+  }
+
+  const { updateTask, deleteTask } = useTasks(user.id);
 
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +40,7 @@ export default function TaskDetailPage() {
 
       try {
         setLoading(true);
-        const taskData = await getTask(taskId);
+        const taskData = await getTask(user.id, taskId);
         setTask(taskData);
       } catch (err: any) {
         setError(err.message || "Failed to load task");
@@ -40,7 +50,7 @@ export default function TaskDetailPage() {
     };
 
     fetchTaskData();
-  }, [taskId]);
+  }, [taskId, user.id]);
 
   const handleSubmit = async (data: TaskUpdateRequest) => {
     if (!taskId) return;
@@ -72,24 +82,45 @@ export default function TaskDetailPage() {
 
   const handleCancel = () => router.push("/tasks");
 
-  if (loading) return <p>Loading task...</p>;
-  if (error || !task) return <p>Error loading task: {error || "Not found"}</p>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-300">
+        Loading task...
+      </div>
+    );
+
+  if (error || !task)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-400">
+        {error || "Task not found"}
+      </div>
+    );
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h2>Edit Task</h2>
+    <div className="min-h-screen bg-linear-to-b from-gray-950 via-gray-900 to-black px-6 py-12 text-white">
+      <div className="max-w-2xl mx-auto bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-xl">
 
-      <TaskForm
-        mode="edit"
-        initialData={task}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        isSubmitting={isSubmitting}
-      />
+        <h2 className="text-3xl font-bold mb-6 bg-clip-text text-transparent bg-linear-to-r from-cyan-400 to-purple-400">
+          Edit Task
+        </h2>
 
-      <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
-        Delete Task
-      </Button>
+        <TaskForm
+          mode="edit"
+          initialData={task}
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
+          isSubmitting={isSubmitting}
+        />
+
+        <div className="mt-6 flex justify-end">
+          <Button
+            variant="danger"
+            onClick={() => setShowDeleteModal(true)}
+          >
+            Delete Task
+          </Button>
+        </div>
+      </div>
 
       <Modal
         isOpen={showDeleteModal}
@@ -110,9 +141,13 @@ export default function TaskDetailPage() {
           </>
         }
       >
-        <p>Are you sure you want to delete this task?</p>
-        <p>{task.title}</p>
-        {task.description && <p>{task.description}</p>}
+        <p className="text-gray-300">
+          Are you sure you want to delete this task?
+        </p>
+        <p className="mt-2 font-semibold text-white">{task.title}</p>
+        {task.description && (
+          <p className="mt-1 text-gray-400">{task.description}</p>
+        )}
       </Modal>
     </div>
   );

@@ -33,7 +33,7 @@ export function useBetterAuth(): AuthContextType {
   // Direct API calls to match our backend endpoints
   const signInHandler = useCallback(async (email: string, password: string): Promise<User> => {
     try {
-      const res = await apiClient.post<User>('/auth/signin', {
+      const res = await apiClient.post<User>('/api/auth/signin', {
         email,
         password
       });
@@ -48,12 +48,12 @@ export function useBetterAuth(): AuthContextType {
 
   const signUpHandler = useCallback(async (email: string, password: string): Promise<User> => {
     try {
-      const res = await apiClient.post<User>('/auth/signup', {
+      const res = await apiClient.post<User>('/api/auth/signup', {
         email,
         password
       });
 
-      router.push('/tasks');
+      router.push('/api/tasks');
       return res.data;
     } catch (error: any) {
       const errorMessage = error.response?.data?.detail?.message || error.message || 'Sign up failed';
@@ -63,7 +63,7 @@ export function useBetterAuth(): AuthContextType {
 
   const signOutHandler = useCallback(async () => {
     try {
-      await apiClient.post('/auth/signout'); // Call backend to clear HttpOnly cookie
+      await apiClient.post('/api/auth/signout'); // Call backend to clear HttpOnly cookie
       router.push('/signin');
     } catch (error) {
       console.error('Sign out error:', error);

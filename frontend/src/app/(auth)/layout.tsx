@@ -6,8 +6,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-background-dark flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h1 className="text-center text-3xl font-bold bg-gradient-to-r from-primary-400 to-accent-purple bg-clip-text text-transparent mb-8">
-          ✨ Todo App
+        <h1 className="text-center text-3xl font-bold bg-linear-to-r from-primary-400 to-accent-purple bg-clip-text mb-8">
+          ✨ TaskWiz App 
         </h1>
       </div>
 

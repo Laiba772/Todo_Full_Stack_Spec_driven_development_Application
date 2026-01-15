@@ -47,7 +47,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
     # Expose authorization headers and set-cookie for BetterAuth
     expose_headers=["Access-Control-Allow-Origin", "Set-Cookie", "Authorization"]

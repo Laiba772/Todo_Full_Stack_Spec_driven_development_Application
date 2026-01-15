@@ -39,12 +39,13 @@ class Settings(BaseSettings):
     log_level: str = "info"
 
     # CORS
-    cors_origins: list[str] = ["http://localhost:3000", "https://taskwiz-full-stack-application-hgw2ggwpx.vercel.app/"]
+    cors_origins: list[str] = ["http://localhost:3000"]
 
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",
-        "case_sensitive": False
+        "case_sensitive": False,
+        "extra": "ignore"
     }
 
 
@@ -52,7 +53,5 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Get cached settings instance."""
     return Settings()
-
-
 # Global settings instance
 settings = get_settings()

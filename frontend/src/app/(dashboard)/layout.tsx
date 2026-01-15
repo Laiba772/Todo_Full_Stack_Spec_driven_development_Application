@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
+import Link from 'next/dist/client/link';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuth();
@@ -30,7 +31,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <h1 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-(--primary) to-(--accent)">
-                ✨ TaskWiz Dashboard
+                <Link href="/">✨ TaskWiz Dashboard</Link>
               </h1>
             </div>
 
@@ -38,9 +39,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {user && (
                 <>
                   <span className="text-sm text-gray-300">{user.email}</span>
-                  <Button variant="ghost" size="sm" onClick={signOut}>
-                    Sign Out
+                  <Button
+                    onClick={signOut}
+                    className="border border-red-500/40 text-red-400 bg-transparent 
+                    rounded-lg px-4 py-2 text-sm font-medium
+                    hover:scale-105 hover:border-red-400 hover:text-red-300 
+                    hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]
+                    transition-all duration-300"
+                  >
+                   Sign Out
                   </Button>
+
                 </>
               )}
             </div>
