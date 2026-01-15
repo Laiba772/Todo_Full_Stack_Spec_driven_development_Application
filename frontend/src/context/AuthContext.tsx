@@ -53,7 +53,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  const signIn = async (email: string, password: string) => {. // This line contains the extra period from the original replace string
+  const signIn = async (email: string, password: string) => { // This line contains the extra period from the original replace string
     setState(s => ({ ...s, loading: true, error: null }));
     try {
       const user = await auth.signIn(email, password);

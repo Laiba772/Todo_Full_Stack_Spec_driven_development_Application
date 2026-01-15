@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://laiba67-todo.hf.space/", // Use remote baseURL
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://laiba67-todo.hf.space", // Use remote baseURL
   withCredentials: true,           // ← very important for cookies (from remote)
                                    // ← can be useful even with token auth (from my local)
   headers: {

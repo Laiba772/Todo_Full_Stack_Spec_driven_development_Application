@@ -83,7 +83,7 @@ async def sign_up(
         max_age=int(expires_delta.total_seconds()),
         expires=int(expires_delta.total_seconds()),
         secure=True,
-        samesite="None"
+        samesite="Lax"
     )
 
     # Return token in response body for client-side handling
@@ -153,7 +153,7 @@ async def sign_in(
         max_age=int(expires_delta.total_seconds()),
         expires=int(expires_delta.total_seconds()),
         secure=True, # enable in production with HTTPS
-        samesite="None" # Strict for stronger protection
+        samesite="Lax" 
     )
     
     # Return token in response body for client-side handling
