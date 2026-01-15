@@ -2,14 +2,15 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000',
-  withCredentials: true,           // ← can be useful even with token auth
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://laiba67-todo.hf.space/", // Use remote baseURL
+  withCredentials: true,           // ← very important for cookies (from remote)
+                                   // ← can be useful even with token auth (from my local)
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add a request interceptor
+// Add a request interceptor (from my local)
 apiClient.interceptors.request.use(
   (config) => {
     // Check if running on the client side
